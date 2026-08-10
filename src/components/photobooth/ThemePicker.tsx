@@ -24,9 +24,11 @@ export function ThemePicker({
 						}`}
 					>
 						<span
-							className="size-4 rounded-full border border-black/10"
+							className="size-5 rounded-full"
 							style={{
-								background: `linear-gradient(135deg, ${t.swatch[0]} 50%, ${t.swatch[1]} 50%)`,
+								background: `conic-gradient(from 135deg, ${t.swatch[0]} 0deg 180deg, ${t.swatch[1]} 180deg 360deg)`,
+								boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
+								backfaceVisibility: "hidden",
 							}}
 						/>
 						{t.name}
