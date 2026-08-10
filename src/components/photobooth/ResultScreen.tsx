@@ -1,4 +1,5 @@
-import { Download, RotateCcw } from "lucide-react";
+import { DownloadMinimalisticIcon } from "@solar-icons/react/bold/download-minimalistic";
+import { RestartIcon } from "@solar-icons/react/bold/restart";
 import { useRef, useState } from "react";
 import type { StripTheme } from "@/lib/photobooth/themes";
 import { StripPreview } from "./StripPreview";
@@ -86,14 +87,14 @@ export function ResultScreen({
 						disabled={saving}
 						className="inline-flex items-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-paper shadow-booth transition-transform hover:scale-105 active:scale-95 disabled:opacity-60"
 					>
-						<Download className="size-5" /> Download PNG
+						<DownloadMinimalisticIcon className="size-5" /> Download PNG
 					</button>
 					<button
 						type="button"
 						onClick={onRestart}
 						className="inline-flex items-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3.5 font-display text-lg font-bold text-booth-ink transition-colors hover:border-booth-ink/40"
 					>
-						<RotateCcw className="size-5" /> Take another
+						<RestartIcon className="size-5" /> Take another
 					</button>
 				</div>
 			</div>

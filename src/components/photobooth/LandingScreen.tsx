@@ -1,4 +1,4 @@
-import { Lock } from "lucide-react";
+import { LockIcon } from "@solar-icons/react/bold/lock";
 
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (
@@ -21,8 +21,8 @@ export function LandingScreen({ onStart }: { onStart: () => void }) {
 			</button>
 
 			<p className="mt-8 inline-flex items-center gap-2 text-sm text-booth-ink/45">
-				<Lock className="size-3.5" /> Everything stays on your device — nothing
-				is uploaded.
+				<LockIcon className="size-3.5" /> Everything stays on your device —
+				nothing is uploaded.
 			</p>
 		</div>
 	);

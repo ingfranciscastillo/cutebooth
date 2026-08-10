@@ -1,4 +1,5 @@
-import { Camera, RefreshCw } from "lucide-react";
+import { CameraIcon } from "@solar-icons/react/bold/camera";
+import { RefreshIcon } from "@solar-icons/react/bold/refresh";
 import {
 	CAMERA_MESSAGES,
 	type CameraError,
@@ -59,12 +60,12 @@ export function CameraStage({
 								onClick={onRetry}
 								className="mt-2 inline-flex items-center gap-2 rounded-full bg-booth-paper px-5 py-2.5 text-sm font-bold text-booth-ink transition-transform hover:scale-105"
 							>
-								<RefreshCw className="size-4" /> Try again
+								<RefreshIcon className="size-4" /> Try again
 							</button>
 						</>
 					) : (
 						<>
-							<Camera className="size-8 animate-pulse opacity-70" />
+							<CameraIcon className="size-8 animate-pulse opacity-70" />
 							<p className="text-sm opacity-70">Waking up the camera…</p>
 						</>
 					)}

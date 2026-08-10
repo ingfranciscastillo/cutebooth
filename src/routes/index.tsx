@@ -1,5 +1,6 @@
+import { ArrowLeftIcon } from "@solar-icons/react/bold/arrow-left";
+import { PlayIcon } from "@solar-icons/react/bold/play";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft, Play } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CameraStage } from "@/components/photobooth/CameraStage";
 import { LandingScreen } from "@/components/photobooth/LandingScreen";
@@ -86,7 +87,7 @@ function Index() {
 								}}
 								className="inline-flex items-center gap-2 text-sm font-semibold text-booth-ink/50 transition-colors hover:text-booth-ink"
 							>
-								<ArrowLeft className="size-4" /> Back
+								<ArrowLeftIcon className="size-4" /> Back
 							</button>
 							<p className="font-mono text-xs font-semibold tracking-[0.3em] text-booth-ink/45">
 								{shooting ? "SMILE!" : `PICK A FRAME · ${SHOT_COUNT} SHOTS`}
@@ -114,7 +115,7 @@ function Index() {
 										disabled={status !== "ready"}
 										className="inline-flex items-center gap-3 rounded-full bg-booth-accent px-12 py-5 font-display text-2xl font-bold text-booth-paper shadow-booth-lg transition-transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
 									>
-										<Play className="size-6 fill-current" /> Start session
+										<PlayIcon className="size-6 fill-current" /> Start session
 									</button>
 								</div>
 							</div>
