@@ -1,19 +1,14 @@
-import { Lock, Sparkles } from "lucide-react";
+import { Lock } from "lucide-react";
 
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (
 		<div className="animate-fade-in flex flex-col items-center text-center">
-			<span className="inline-flex items-center gap-2 rounded-full border border-booth-ink/10 bg-booth-paper px-4 py-1.5 font-mono text-xs font-semibold tracking-[0.25em] text-booth-ink/60">
-				<Sparkles className="size-3.5" /> 4 SHOTS · 1 STRIP
-			</span>
-
 			<h1 className="mt-6 font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
 				photo
 				<span className="text-booth-accent">booth</span>
 			</h1>
 			<p className="mt-5 max-w-md text-lg text-booth-ink/60">
-				Step in, pick a frame, strike four poses. Your strip prints out in
-				seconds.
+				Pick a frame. Pose four times. Keep the strip.
 			</p>
 
 			<button
