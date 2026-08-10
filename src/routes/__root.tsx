@@ -1,12 +1,11 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
 	createRootRoute,
 	HeadContent,
 	Link,
 	Outlet,
 	Scripts,
+	useRouter,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
 import appCss from "../styles.css?url";
 
@@ -36,6 +35,7 @@ function NotFoundComponent() {
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 	console.error(error);
+	const router = useRouter();
 
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-background px-4">
