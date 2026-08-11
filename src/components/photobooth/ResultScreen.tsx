@@ -1,6 +1,8 @@
 import { DownloadMinimalisticIcon } from "@solar-icons/react/bold/download-minimalistic";
 import { RestartIcon } from "@solar-icons/react/bold/restart";
-import { useRef, useState } from "react";
+import { ShareIcon } from "@solar-icons/react/bold/share";
+import { useEffect, useRef, useState } from "react";
+import { canShareFiles, shareStrip } from "@/lib/photobooth/share";
 import type { StripTheme } from "@/lib/photobooth/themes";
 import { StripPreview } from "./StripPreview";
 import { ThemePicker } from "./ThemePicker";
@@ -22,6 +24,12 @@ export function ResultScreen({
 }) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 	const [saving, setSaving] = useState(false);
+	const [sharing, setSharing] = useState(false);
+	const [canShare, setCanShare] = useState(false);
+
+	useEffect(() => {
+		setCanShare(canShareFiles());
+	}, []);
 
 	const download = () => {
 		const canvas = canvasRef.current;
@@ -37,6 +45,14 @@ export function ResultScreen({
 			a.click();
 			URL.revokeObjectURL(url);
 		}, "image/png");
+	};
+
+	const share = async () => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		setSharing(true);
+		const result = await shareStrip(canvas, `photobooth-${Date.now()}.png`);
+		setSharing(false);
 	};
 
 	return (
@@ -89,6 +105,16 @@ export function ResultScreen({
 					>
 						<DownloadMinimalisticIcon className="size-5" /> Download PNG
 					</button>
+					{canShare && (
+						<button
+							type="button"
+							onClick={share}
+							disabled={sharing}
+							className="inline-flex items-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3.5 font-display text-lg font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60"
+						>
+							<ShareIcon className="size-5" /> Share
+						</button>
+					)}
 					<button
 						type="button"
 						onClick={onRestart}

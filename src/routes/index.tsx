@@ -1,14 +1,17 @@
 import { ArrowLeftIcon } from "@solar-icons/react/bold/arrow-left";
+import { CameraRotateIcon } from "@solar-icons/react/bold/camera-rotate";
 import { PlayIcon } from "@solar-icons/react/bold/play";
+import { VolumeCrossIcon } from "@solar-icons/react/bold/volume-cross";
+import { VolumeLoudIcon } from "@solar-icons/react/bold/volume-loud";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { CameraStage } from "@/components/photobooth/CameraStage";
 import { LandingScreen } from "@/components/photobooth/LandingScreen";
 import { ResultScreen } from "@/components/photobooth/ResultScreen";
-import { ThemePicker } from "@/components/photobooth/ThemePicker";
 import { DEFAULT_THEME, type StripTheme } from "@/lib/photobooth/themes";
 import { useCamera } from "@/lib/photobooth/useCamera";
 import { SHOT_COUNT, useSession } from "@/lib/photobooth/useSession";
+import { useSound } from "@/lib/photobooth/useSound";
 
 const TITLE = "Photobooth — Cute Korean Photo Strip Maker";
 const DESC =
@@ -42,7 +45,11 @@ function Index() {
 		error,
 		start: startCamera,
 		stop: stopCamera,
+		facing,
+		setFacing,
+		hasMultipleCameras,
 	} = useCamera();
+	const { muted, toggleMuted, unlock, beep, shutter } = useSound();
 
 	const handleComplete = useCallback(
 		(shots: HTMLCanvasElement[]) => {
@@ -53,7 +60,11 @@ function Index() {
 		[stopCamera],
 	);
 
-	const session = useSession(videoRef, handleComplete);
+	const session = useSession(videoRef, handleComplete, {
+		mirror: facing === "user",
+		onTick: beep,
+		onShutter: shutter,
+	});
 	const { phase, reset } = session;
 
 	const enterBooth = () => {
@@ -67,6 +78,11 @@ function Index() {
 	}, [stage, startCamera]);
 
 	const shooting = phase !== "idle" && phase !== "done";
+
+	const beginSession = () => {
+		unlock();
+		session.start();
+	};
 
 	return (
 		<main className="min-h-screen bg-booth-paper font-sans text-booth-ink">
@@ -89,9 +105,27 @@ function Index() {
 							>
 								<ArrowLeftIcon className="size-4" /> Back
 							</button>
-							<p className="font-mono text-xs font-semibold tracking-[0.3em] text-booth-ink/45">
-								{shooting ? "SMILE!" : `PICK A FRAME · ${SHOT_COUNT} SHOTS`}
-							</p>
+							<div className="flex items-center gap-3">
+								<p className="font-mono text-xs font-semibold tracking-[0.3em] text-booth-ink/45">
+									{shooting ? "SMILE!" : `PICK A FRAME · ${SHOT_COUNT} SHOTS`}
+								</p>
+								<button
+									type="button"
+									onClick={toggleMuted}
+									aria-pressed={muted}
+									aria-label={
+										muted ? "Unmute shutter sounds" : "Mute shutter sounds"
+									}
+									title={muted ? "Sound off" : "Sound on"}
+									className="inline-flex size-9 items-center justify-center rounded-full border-2 border-booth-ink/15 text-booth-ink/60 transition-colors hover:border-booth-ink/40 hover:text-booth-ink"
+								>
+									{muted ? (
+										<VolumeCrossIcon className="size-4" />
+									) : (
+										<VolumeLoudIcon className="size-4" />
+									)}
+								</button>
+							</div>
 						</div>
 
 						<CameraStage
@@ -103,14 +137,37 @@ function Index() {
 							count={session.count}
 							shotIndex={session.shotIndex}
 							preview={session.preview}
+							mirrored={facing === "user"}
 						/>
 
 						{!shooting ? (
 							<div className="space-y-5">
+								{hasMultipleCameras && (
+									<div className="flex justify-center">
+										<div className="inline-flex items-center gap-1 rounded-full border-2 border-booth-ink/15 p-1">
+											<CameraRotateIcon className="ml-2 size-4 text-booth-ink/40" />
+											{(["user", "environment"] as const).map((f) => (
+												<button
+													key={f}
+													type="button"
+													onClick={() => setFacing(f)}
+													aria-pressed={facing === f}
+													className={`rounded-full px-4 py-1.5 text-sm font-bold transition-colors ${
+														facing === f
+															? "bg-booth-ink text-booth-paper"
+															: "text-booth-ink/60 hover:text-booth-ink"
+													}`}
+												>
+													{f === "user" ? "Front" : "Rear"}
+												</button>
+											))}
+										</div>
+									</div>
+								)}
 								<div className="flex justify-center">
 									<button
 										type="button"
-										onClick={session.start}
+										onClick={beginSession}
 										disabled={status !== "ready"}
 										className="inline-flex items-center gap-3 rounded-full bg-booth-accent px-12 py-5 font-display text-2xl font-bold text-booth-paper shadow-booth-lg transition-transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
 									>
