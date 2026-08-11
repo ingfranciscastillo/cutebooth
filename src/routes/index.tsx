@@ -93,7 +93,7 @@ function Index() {
 
 				{stage === "booth" && (
 					<div className="animate-fade-in w-full max-w-3xl space-y-6">
-						<div className="flex items-center justify-between">
+						<div className="flex items-center justify-between gap-4">
 							<button
 								type="button"
 								onClick={() => {
@@ -105,8 +105,8 @@ function Index() {
 							>
 								<ArrowLeftIcon className="size-4" /> Back
 							</button>
-							<div className="flex items-center gap-3">
-								<p className="font-mono text-xs font-semibold tracking-[0.3em] text-booth-ink/45">
+							<div className="flex min-w-0 items-center gap-2">
+								<p className="truncate font-mono text-[10px] font-semibold tracking-[0.2em] text-booth-ink/45 sm:text-xs sm:tracking-[0.3em]">
 									{shooting ? "SMILE!" : `GET READY · ${SHOT_COUNT} SHOTS`}
 								</p>
 								<button
