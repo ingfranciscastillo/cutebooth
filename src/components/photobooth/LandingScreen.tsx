@@ -16,7 +16,7 @@ export function LandingScreen({ onStart }: { onStart: () => void }) {
 			</div>
 
 			<p className="mt-5 max-w-md text-lg text-booth-ink/60">
-				Pick a frame. Pose four times. Keep the strip.
+				Pick a frame, strike a pose, and make a little memory.
 			</p>
 
 			<button

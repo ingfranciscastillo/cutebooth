@@ -17,6 +17,7 @@ type Props = {
 	count: number;
 	shotIndex: number;
 	preview: string | null;
+	mirrored?: boolean;
 };
 
 export function CameraStage({
@@ -28,6 +29,7 @@ export function CameraStage({
 	count,
 	shotIndex,
 	preview,
+	mirrored = true,
 }: Props) {
 	const shooting = phase !== "idle" && phase !== "done";
 
@@ -42,7 +44,7 @@ export function CameraStage({
 				playsInline
 				muted
 				autoPlay
-				className="size-full scale-x-[-1] object-cover"
+				className={`size-full object-cover ${mirrored ? "scale-x-[-1]" : ""}`}
 			/>
 
 			{status !== "ready" && (

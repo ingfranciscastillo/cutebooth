@@ -81,7 +81,7 @@ export const THEMES: StripTheme[] = [
 	},
 ];
 
-export const DEFAULT_THEME = THEMES[1]!;
+export const DEFAULT_THEME = THEMES.find((t) => t.id === "mantis") ?? THEMES[0];
 
 export function getTheme(id: string): StripTheme {
 	return THEMES.find((t) => t.id === id) ?? DEFAULT_THEME;

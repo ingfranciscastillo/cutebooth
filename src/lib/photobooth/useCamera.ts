@@ -7,6 +7,7 @@ export type CameraError =
 	| "busy"
 	| "unsupported"
 	| "unknown";
+export type Facing = "user" | "environment";
 
 export const CAMERA_MESSAGES: Record<
 	CameraError,
@@ -48,47 +49,87 @@ export function useCamera() {
 	const streamRef = useRef<MediaStream | null>(null);
 	const [status, setStatus] = useState<CameraStatus>("idle");
 	const [error, setError] = useState<CameraError | null>(null);
+	const [facing, setFacingState] = useState<Facing>("user");
+	const [cameraCount, setCameraCount] = useState(1);
+	const facingRef = useRef<Facing>("user");
 
-	const stop = useCallback(() => {
-		streamRef.current?.getTracks().forEach((t) => t.stop());
+	const stopTracks = useCallback(() => {
+		streamRef.current?.getTracks().forEach((t) => {
+			t.stop();
+		});
 		streamRef.current = null;
 		if (videoRef.current) videoRef.current.srcObject = null;
+	}, []);
+
+	const stop = useCallback(() => {
+		stopTracks();
 		setStatus("idle");
-	}, []);
+	}, [stopTracks]);
 
-	const start = useCallback(async () => {
-		if (
-			typeof navigator === "undefined" ||
-			!navigator.mediaDevices?.getUserMedia
-		) {
-			setError("unsupported");
-			setStatus("error");
-			return;
-		}
-		setStatus("requesting");
-		setError(null);
-		try {
-			const stream = await navigator.mediaDevices.getUserMedia({
-				video: {
-					width: { ideal: 1280 },
-					height: { ideal: 960 },
-					facingMode: "user",
-				},
-				audio: false,
-			});
-			streamRef.current = stream;
-			if (videoRef.current) {
-				videoRef.current.srcObject = stream;
-				await videoRef.current.play().catch(() => {});
+	const start = useCallback(
+		async (next?: Facing) => {
+			const want = next ?? facingRef.current;
+			facingRef.current = want;
+			setFacingState(want);
+
+			if (
+				typeof navigator === "undefined" ||
+				!navigator.mediaDevices?.getUserMedia
+			) {
+				setError("unsupported");
+				setStatus("error");
+				return;
 			}
-			setStatus("ready");
-		} catch (err) {
-			setError(classify(err));
-			setStatus("error");
-		}
-	}, []);
+			setStatus("requesting");
+			setError(null);
+			stopTracks();
+			try {
+				const stream = await navigator.mediaDevices.getUserMedia({
+					video: {
+						width: { ideal: 1280 },
+						height: { ideal: 960 },
+						facingMode: want,
+					},
+					audio: false,
+				});
+				streamRef.current = stream;
+				if (videoRef.current) {
+					videoRef.current.srcObject = stream;
+					await videoRef.current.play().catch(() => {});
+				}
+				setStatus("ready");
+				try {
+					const devices = await navigator.mediaDevices.enumerateDevices();
+					setCameraCount(devices.filter((d) => d.kind === "videoinput").length);
+				} catch {
+					/* ignore */
+				}
+			} catch (err) {
+				setError(classify(err));
+				setStatus("error");
+			}
+		},
+		[stopTracks],
+	);
 
-	useEffect(() => () => stop(), [stop]);
+	const setFacing = useCallback(
+		(next: Facing) => {
+			if (next === facingRef.current) return;
+			void start(next);
+		},
+		[start],
+	);
 
-	return { videoRef, status, error, start, stop };
+	useEffect(() => () => stopTracks(), [stopTracks]);
+
+	return {
+		videoRef,
+		status,
+		error,
+		start,
+		stop,
+		facing,
+		setFacing,
+		hasMultipleCameras: cameraCount > 1,
+	};
 }
