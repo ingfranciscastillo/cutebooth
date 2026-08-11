@@ -1,6 +1,8 @@
-import { DownloadMinimalisticIcon } from "@solar-icons/react/bold/download-minimalistic";
-import { RestartIcon } from "@solar-icons/react/bold/restart";
-import { ShareIcon } from "@solar-icons/react/bold/share";
+import {
+	DownloadMinimalisticIcon,
+	RestartIcon,
+	ShareIcon,
+} from "@solar-icons/react/bold";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { canShareFiles, shareStrip } from "@/lib/photobooth/share";

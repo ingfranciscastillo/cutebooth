@@ -1,8 +1,10 @@
-import { ArrowLeftIcon } from "@solar-icons/react/bold/arrow-left";
-import { CameraRotateIcon } from "@solar-icons/react/bold/camera-rotate";
-import { PlayIcon } from "@solar-icons/react/bold/play";
-import { VolumeCrossIcon } from "@solar-icons/react/bold/volume-cross";
-import { VolumeLoudIcon } from "@solar-icons/react/bold/volume-loud";
+import {
+	ArrowLeftIcon,
+	CameraRotateIcon,
+	PlayIcon,
+	VolumeCrossIcon,
+	VolumeLoudIcon,
+} from "@solar-icons/react/bold";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { CameraStage } from "@/components/photobooth/CameraStage";

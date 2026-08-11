@@ -1,5 +1,4 @@
-import { CameraIcon } from "@solar-icons/react/bold/camera";
-import { LockIcon } from "@solar-icons/react/bold/lock";
+import { CameraIcon, LockIcon } from "@solar-icons/react/bold";
 
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (

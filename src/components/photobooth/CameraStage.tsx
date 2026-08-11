@@ -1,5 +1,4 @@
-import { CameraIcon } from "@solar-icons/react/bold/camera";
-import { RefreshIcon } from "@solar-icons/react/bold/refresh";
+import { CameraIcon, RefreshIcon } from "@solar-icons/react/bold";
 import {
 	CAMERA_MESSAGES,
 	type CameraError,
