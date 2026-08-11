@@ -7,6 +7,7 @@ import {
 	useRouter,
 } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -115,6 +116,24 @@ function RootShell({ children }: { children: ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
+				<Toaster
+					position="bottom-center"
+					toastOptions={{
+						duration: 2500,
+						style: {
+							background: "var(--color-booth-paper)",
+							color: "var(--color-booth-ink)",
+							border:
+								"2px solid color-mix(in srgb, var(--color-booth-ink) 10%, transparent)",
+							borderRadius: "9999px",
+							padding: "10px 16px",
+							fontFamily: "var(--font-sans)",
+							fontSize: "14px",
+							fontWeight: "700",
+							boxShadow: "var(--shadow-booth)",
+						},
+					}}
+				/>
 				{children}
 				<Scripts />
 			</body>

@@ -2,6 +2,7 @@ import { DownloadMinimalisticIcon } from "@solar-icons/react/bold/download-minim
 import { RestartIcon } from "@solar-icons/react/bold/restart";
 import { ShareIcon } from "@solar-icons/react/bold/share";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { canShareFiles, shareStrip } from "@/lib/photobooth/share";
 import type { StripTheme } from "@/lib/photobooth/themes";
 import { StripPreview } from "./StripPreview";
@@ -33,26 +34,57 @@ export function ResultScreen({
 
 	const download = () => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+
+		if (!canvas) {
+			toast.error("Couldn't save the photo.");
+			return;
+		}
+
 		setSaving(true);
+
 		canvas.toBlob((blob) => {
 			setSaving(false);
-			if (!blob) return;
+
+			if (!blob) {
+				toast.error("Couldn't save the photo.");
+				return;
+			}
+
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement("a");
+
 			a.href = url;
 			a.download = `photobooth-${Date.now()}.png`;
 			a.click();
+
 			URL.revokeObjectURL(url);
+
+			toast.success("Photo saved!");
 		}, "image/png");
 	};
 
 	const share = async () => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+
+		if (!canvas) {
+			toast.error("Couldn't share the photo.");
+			return;
+		}
+
 		setSharing(true);
+
 		const result = await shareStrip(canvas, `photobooth-${Date.now()}.png`);
+
 		setSharing(false);
+
+		switch (result) {
+			case "shared":
+				toast.success("Photo shared!");
+				break;
+			case "failed":
+				toast.error("Couldn't share the photo.");
+				break;
+		}
 	};
 
 	return (
@@ -109,7 +141,8 @@ export function ResultScreen({
 						disabled={saving}
 						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-paper shadow-booth transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 md:basis-full"
 					>
-						<DownloadMinimalisticIcon className="size-5" /> Save photo
+						<DownloadMinimalisticIcon className="size-5" />{" "}
+						{saving ? "Saving..." : "Save photo"}
 					</button>
 
 					{canShare && (
@@ -119,7 +152,8 @@ export function ResultScreen({
 							disabled={sharing}
 							className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-6 py-2.5 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60 md:w-auto md:flex-1"
 						>
-							<ShareIcon className="size-5" /> Share
+							<ShareIcon className="size-5" />{" "}
+							{sharing ? "Sharing..." : "Share"}
 						</button>
 					)}
 
