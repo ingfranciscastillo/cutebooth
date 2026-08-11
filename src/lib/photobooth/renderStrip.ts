@@ -216,9 +216,10 @@ export function renderStrip({
 		ctx.fillRect(PAD, y, PHOTO_W, PHOTO_H);
 		const photo = photos[i];
 		if (photo) {
-			if (theme.filter) ctx.filter = theme.filter;
 			drawCover(ctx, photo, PAD, y, PHOTO_W, PHOTO_H);
-			ctx.filter = "none";
+			if (theme.filter) {
+				applyManualFilter(ctx, PAD, y, PHOTO_W, PHOTO_H, theme.filter, scale);
+			}
 		}
 		ctx.restore();
 
@@ -260,4 +261,75 @@ export function renderStrip({
 	drawGrain(ctx);
 
 	return canvas;
+}
+
+/** Manual pixel-level filter replacement for ctx.filter, which isn't
+ * reliably supported on mobile Safari / some Android WebViews. */
+function applyManualFilter(
+	ctx: CanvasRenderingContext2D,
+	x: number,
+	y: number,
+	w: number,
+	h: number,
+	filter: string,
+	scale: number,
+) {
+	const px = Math.round(x * scale);
+	const py = Math.round(y * scale);
+	const pw = Math.round(w * scale);
+	const ph = Math.round(h * scale);
+
+	const imgData = ctx.getImageData(px, py, pw, ph);
+	const d = imgData.data;
+
+	const wantsGrayscale = filter.includes("grayscale");
+	const contrastMatch = filter.match(/contrast\(([\d.]+)\)/);
+	const contrast = contrastMatch ? parseFloat(contrastMatch[1]) : 1;
+
+	const wantsSepia = filter.includes("sepia");
+	const sepiaMatch = filter.match(/sepia\(([\d.]+)\)/);
+	const sepiaAmt = sepiaMatch ? parseFloat(sepiaMatch[1]) : 0;
+	const satMatch = filter.match(/saturate\(([\d.]+)\)/);
+	const saturate = satMatch ? parseFloat(satMatch[1]) : 1;
+
+	for (let i = 0; i < d.length; i += 4) {
+		let r = d[i];
+		let g = d[i + 1];
+		let b = d[i + 2];
+
+		if (wantsGrayscale) {
+			const gray = r * 0.2126 + g * 0.7152 + b * 0.0722;
+			r = g = b = gray;
+		}
+
+		if (wantsSepia && sepiaAmt > 0) {
+			const sr = r * 0.393 + g * 0.769 + b * 0.189;
+			const sg = r * 0.349 + g * 0.686 + b * 0.168;
+			const sb = r * 0.272 + g * 0.534 + b * 0.131;
+			r += (sr - r) * sepiaAmt;
+			g += (sg - g) * sepiaAmt;
+			b += (sb - b) * sepiaAmt;
+		}
+
+		if (saturate !== 1) {
+			const gray = r * 0.2126 + g * 0.7152 + b * 0.0722;
+			r = gray + (r - gray) * saturate;
+			g = gray + (g - gray) * saturate;
+			b = gray + (b - gray) * saturate;
+		}
+
+		if (contrast !== 1) {
+			// CSS contrast() is a plain multiplier around the midpoint, NOT
+			// the classic -255..255 "contrast level" formula.
+			r = (r - 128) * contrast + 128;
+			g = (g - 128) * contrast + 128;
+			b = (b - 128) * contrast + 128;
+		}
+
+		d[i] = Math.min(255, Math.max(0, r));
+		d[i + 1] = Math.min(255, Math.max(0, g));
+		d[i + 2] = Math.min(255, Math.max(0, b));
+	}
+
+	ctx.putImageData(imgData, px, py);
 }
