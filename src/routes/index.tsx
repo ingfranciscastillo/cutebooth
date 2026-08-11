@@ -145,7 +145,7 @@ function Index() {
 								{hasMultipleCameras && (
 									<div className="flex justify-center">
 										<div className="inline-flex items-center gap-1 rounded-full border-2 border-booth-ink/15 p-1">
-											<CameraRotateIcon className="ml-2 size-4 text-booth-ink/40" />
+											<CameraRotateIcon className="ml-2 mr-1 size-4 text-booth-ink/40" />
 											{(["user", "environment"] as const).map((f) => (
 												<button
 													key={f}

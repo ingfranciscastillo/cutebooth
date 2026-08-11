@@ -96,12 +96,12 @@ export function ResultScreen({
 
 				<ThemePicker value={theme} onChange={onThemeChange} />
 
-				<div className="flex flex-wrap gap-3">
+				<div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
 					<button
 						type="button"
 						onClick={download}
 						disabled={saving}
-						className="inline-flex items-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-paper shadow-booth transition-transform hover:scale-105 active:scale-95 disabled:opacity-60"
+						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3 font-display text-base font-bold text-booth-paper shadow-booth transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 md:w-auto md:py-3.5 md:text-lg"
 					>
 						<DownloadMinimalisticIcon className="size-5" /> Download PNG
 					</button>
@@ -110,7 +110,7 @@ export function ResultScreen({
 							type="button"
 							onClick={share}
 							disabled={sharing}
-							className="inline-flex items-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3.5 font-display text-lg font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60"
+							className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60 md:w-auto md:py-3.5 md:text-lg"
 						>
 							<ShareIcon className="size-5" /> Share
 						</button>
@@ -118,7 +118,7 @@ export function ResultScreen({
 					<button
 						type="button"
 						onClick={onRestart}
-						className="inline-flex items-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3.5 font-display text-lg font-bold text-booth-ink transition-colors hover:border-booth-ink/40"
+						className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 md:w-auto md:py-3.5 md:text-lg"
 					>
 						<RestartIcon className="size-5" /> Take another
 					</button>
