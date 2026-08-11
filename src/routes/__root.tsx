@@ -10,6 +10,11 @@ import type { ReactNode } from "react";
 import { Toaster } from "react-hot-toast";
 import appCss from "../styles.css?url";
 
+const SITE_URL = "https://cutebooth.vercel.app";
+const SITE_TITLE = "Cutebooth — Cute Korean Photo Strip Maker";
+const SITE_DESCRIPTION =
+	"Take four webcam photos and print a cute Korean-style vertical photo strip. Fully in your browser, nothing uploaded.";
+
 function NotFoundComponent() {
 	return (
 		<div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -72,37 +77,67 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRoute({
-	head: () => ({
-		meta: [
-			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "Lovable App" },
-			{ name: "description", content: "Lovable Generated Project" },
-			{ name: "author", content: "Lovable" },
-			{ property: "og:title", content: "Lovable App" },
-			{ property: "og:description", content: "Lovable Generated Project" },
-			{ property: "og:type", content: "website" },
-			{ name: "twitter:card", content: "summary_large_image" },
-			{ name: "twitter:site", content: "@Lovable" },
-		],
-		links: [
-			{
-				rel: "stylesheet",
-				href: appCss,
-			},
-			{ rel: "preconnect", href: "https://fonts.googleapis.com" },
-			{
-				rel: "preconnect",
-				href: "https://fonts.gstatic.com",
-				crossOrigin: "anonymous",
-			},
-			{
-				rel: "stylesheet",
-				href: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=DM+Mono:wght@400;500&family=Nunito:wght@400;600;700&display=swap",
-			},
-			{ rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-		],
-	}),
+	head: () => {
+		const baseUrl = new URL("/", SITE_URL).toString();
+		const ogImage = new URL("/og-image.webp", SITE_URL).toString();
+
+		return {
+			meta: [
+				{ charSet: "utf-8" },
+				{ name: "viewport", content: "width=device-width, initial-scale=1" },
+				{ title: SITE_TITLE },
+				{ name: "description", content: SITE_DESCRIPTION },
+				{ name: "theme-color", content: "#FFFDF1" },
+				{ name: "color-scheme", content: "light" },
+				{ name: "application-name", content: "CuteBooth" },
+				{ name: "robots", content: "index, follow, max-image-preview:large" },
+				{ property: "og:title", content: SITE_TITLE },
+				{ property: "og:description", content: SITE_DESCRIPTION },
+				{ property: "og:type", content: "website" },
+				{ property: "og:url", content: baseUrl },
+				{ property: "og:image", content: ogImage },
+				{ property: "og:image:width", content: "1731" },
+				{ property: "og:image:height", content: "909" },
+				{
+					property: "og:image:alt",
+					content: "Photobooth — your strip, your moment",
+				},
+				{ property: "og:image:type", content: "image/webp" },
+				{ name: "twitter:card", content: "summary_large_image" },
+				{ name: "twitter:title", content: SITE_TITLE },
+				{ name: "twitter:description", content: SITE_DESCRIPTION },
+				{ name: "twitter:image", content: ogImage },
+			],
+			links: [
+				{ rel: "stylesheet", href: appCss },
+				{ rel: "canonical", href: baseUrl },
+				{ rel: "icon", href: "/logo.png", type: "image/png" },
+				{ rel: "apple-touch-icon", href: "/logo.png" },
+			],
+			scripts: [
+				{
+					type: "application/ld+json",
+					children: JSON.stringify({
+						"@context": "https://schema.org",
+						"@type": "WebApplication",
+						name: "Photobooth",
+						url: baseUrl,
+						description: SITE_DESCRIPTION,
+						applicationCategory: "PhotographyApplication",
+						featureList: [
+							"Four-photo webcam strips",
+							"Korean-style photo strips",
+							"Photo strip templates",
+							"Browser-based photo booth",
+						],
+						browserRequirements: "Requires WebRTC getUserMedia",
+						offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+						image: ogImage,
+					}),
+				},
+			],
+		};
+	},
 	shellComponent: RootShell,
 	component: RootComponent,
 	errorComponent: ErrorComponent,

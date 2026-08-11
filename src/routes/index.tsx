@@ -13,21 +13,7 @@ import { useCamera } from "@/lib/photobooth/useCamera";
 import { SHOT_COUNT, useSession } from "@/lib/photobooth/useSession";
 import { useSound } from "@/lib/photobooth/useSound";
 
-const TITLE = "Photobooth — Cute Korean Photo Strip Maker";
-const DESC =
-	"Take four webcam photos and print a cute Korean-style vertical photo strip. Fully in your browser, nothing uploaded.";
-
 export const Route = createFileRoute("/")({
-	head: () => ({
-		meta: [
-			{ title: TITLE },
-			{ name: "description", content: DESC },
-			{ property: "og:title", content: TITLE },
-			{ property: "og:description", content: DESC },
-			{ property: "og:type", content: "website" },
-			{ name: "twitter:card", content: "summary_large_image" },
-		],
-	}),
 	component: Index,
 });
 
