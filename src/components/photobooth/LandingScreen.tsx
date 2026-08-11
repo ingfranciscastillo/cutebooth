@@ -1,12 +1,20 @@
+import { CameraIcon } from "@solar-icons/react/bold/camera";
 import { LockIcon } from "@solar-icons/react/bold/lock";
 
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (
 		<div className="animate-fade-in flex flex-col items-center text-center">
-			<h1 className="mt-6 font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
-				photo
-				<span className="text-booth-accent">booth</span>
-			</h1>
+			<div className="flex items-center">
+				<span className="relative flex size-14 shrink-0 items-center justify-center sm:size-20">
+					<span className="booth-camera-flash absolute inset-0 rounded-full bg-booth-accent/50" />
+					<CameraIcon className="booth-camera-snap relative size-9 text-booth-ink sm:size-14" />
+				</span>
+				<h1 className="mt-6 font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
+					photo
+					<span className="text-booth-accent">booth</span>
+				</h1>
+			</div>
+
 			<p className="mt-5 max-w-md text-lg text-booth-ink/60">
 				Pick a frame. Pose four times. Keep the strip.
 			</p>

@@ -107,7 +107,6 @@ function Index() {
 
 						{!shooting ? (
 							<div className="space-y-5">
-								<ThemePicker value={theme} onChange={setTheme} />
 								<div className="flex justify-center">
 									<button
 										type="button"
