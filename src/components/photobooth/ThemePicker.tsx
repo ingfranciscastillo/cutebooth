@@ -18,6 +18,7 @@ export function ThemePicker({
 							type="button"
 							onClick={() => onChange(t)}
 							aria-pressed={active}
+							aria-label={`Frame: ${t.name}`}
 							className={`group flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-all duration-200 ${
 								active
 									? "border-booth-ink/70 bg-booth-ink text-booth-paper shadow-booth"
@@ -25,6 +26,7 @@ export function ThemePicker({
 							}`}
 						>
 							<span
+								aria-hidden="true"
 								className="size-5 rounded-full"
 								style={{
 									background: `conic-gradient(from 135deg, ${t.swatch[0]} 0deg 180deg, ${t.swatch[1]} 180deg 360deg)`,

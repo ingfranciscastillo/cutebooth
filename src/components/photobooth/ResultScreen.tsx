@@ -90,7 +90,10 @@ export function ResultScreen({
 	};
 
 	return (
-		<div className="grid w-full items-center gap-10 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+		<div
+			aria-live="polite"
+			className="grid w-full items-center gap-10 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)]"
+		>
 			<StripPreview
 				photos={photos}
 				theme={theme}
@@ -122,10 +125,23 @@ export function ResultScreen({
 						id="caption"
 						value={caption}
 						maxLength={28}
+						aria-describedby="caption-hint"
 						onChange={(e) => onCaptionChange(e.target.value)}
 						className="w-full rounded-2xl border-2 border-booth-ink/10 bg-booth-paper px-4 py-3 font-semibold uppercase tracking-wide text-booth-ink outline-none transition-colors placeholder:text-booth-ink/30 focus:border-booth-accent"
 						placeholder="KEEP YOURSELF ALIVE"
 					/>
+					<div
+						id="caption-hint"
+						aria-live="polite"
+						className="flex items-center justify-between font-mono text-[10px] font-semibold tracking-[0.2em] text-booth-ink/45"
+					>
+						<span className="sr-only">
+							Characters used: {caption.length} of 28 maximum
+						</span>
+						<span aria-hidden="true">
+							{caption.length === 28 ? "MAX" : `${caption.length} / 28`}
+						</span>
+					</div>
 				</div>
 
 				<div className="space-y-3">
@@ -141,9 +157,9 @@ export function ResultScreen({
 						type="button"
 						onClick={download}
 						disabled={saving}
-						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-paper shadow-booth transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 md:basis-full"
+						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-ink shadow-booth transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 md:basis-full"
 					>
-						<DownloadMinimalisticIcon className="size-5" />{" "}
+						<DownloadMinimalisticIcon aria-hidden="true" className="size-5" />{" "}
 						{saving ? "Saving..." : "Save photo"}
 					</button>
 
@@ -154,7 +170,7 @@ export function ResultScreen({
 							disabled={sharing}
 							className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-6 py-2.5 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60 md:w-auto md:flex-1"
 						>
-							<ShareIcon className="size-5" />{" "}
+							<ShareIcon aria-hidden="true" className="size-5" />{" "}
 							{sharing ? "Sharing..." : "Share"}
 						</button>
 					)}
@@ -164,7 +180,7 @@ export function ResultScreen({
 						onClick={onRestart}
 						className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-6 py-2.5 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 md:w-auto md:flex-1"
 					>
-						<RestartIcon className="size-5" /> Take another
+						<RestartIcon aria-hidden="true" className="size-5" /> Take another
 					</button>
 				</div>
 			</div>

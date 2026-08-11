@@ -73,7 +73,10 @@ function Index() {
 	};
 
 	return (
-		<main className="min-h-screen bg-booth-paper font-sans text-booth-ink">
+		<main
+			id="main-content"
+			className="min-h-screen bg-booth-paper font-sans text-booth-ink"
+		>
 			<div className="pointer-events-none fixed inset-0 opacity-[0.5] [background:radial-gradient(circle_at_15%_10%,var(--color-booth-accent-soft),transparent_45%),radial-gradient(circle_at_85%_85%,var(--color-booth-accent-soft),transparent_45%)]" />
 
 			<div className="relative mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-12">
@@ -157,9 +160,13 @@ function Index() {
 										type="button"
 										onClick={beginSession}
 										disabled={status !== "ready"}
-										className="inline-flex items-center gap-3 rounded-full bg-booth-accent px-12 py-5 font-display text-2xl font-bold text-booth-paper shadow-booth-lg transition-transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+										className="inline-flex items-center gap-3 rounded-full bg-booth-accent px-12 py-5 font-display text-2xl font-bold text-booth-ink shadow-booth-lg transition-transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
 									>
-										<PlayIcon className="size-6 fill-current" /> Start session
+										<PlayIcon
+											aria-hidden="true"
+											className="size-6 fill-current"
+										/>{" "}
+										Start session
 									</button>
 								</div>
 							</div>

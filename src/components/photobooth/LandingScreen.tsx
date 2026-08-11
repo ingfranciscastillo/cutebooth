@@ -6,7 +6,10 @@ export function LandingScreen({ onStart }: { onStart: () => void }) {
 			<div className="flex items-center gap-0">
 				<span className="relative flex size-14 shrink-0 items-center justify-center sm:size-20">
 					<span className="booth-camera-flash absolute inset-0 rounded-full bg-booth-accent/50" />
-					<CameraIcon className="booth-camera-snap relative size-9 text-booth-ink sm:size-14" />
+					<CameraIcon
+						aria-hidden="true"
+						className="booth-camera-snap relative size-9 text-booth-ink sm:size-14"
+					/>
 				</span>
 				<h1 className="font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
 					photo
@@ -21,15 +24,15 @@ export function LandingScreen({ onStart }: { onStart: () => void }) {
 			<button
 				type="button"
 				onClick={onStart}
-				className="group relative mt-10 rounded-full bg-booth-accent px-16 py-6 font-display text-3xl font-bold tracking-wide text-booth-paper shadow-booth-lg transition-transform duration-200 hover:scale-105 active:scale-95"
+				className="group relative mt-10 rounded-full bg-booth-accent px-16 py-6 font-display text-3xl font-bold tracking-wide text-booth-ink shadow-booth-lg transition-transform duration-200 hover:scale-105 active:scale-95"
 			>
 				<span className="absolute inset-0 animate-booth-glow rounded-full bg-booth-accent" />
 				<span className="relative">START</span>
 			</button>
 
 			<p className="mt-8 inline-flex items-center gap-2 text-sm text-booth-ink/45">
-				<LockIcon className="size-3.5" /> Everything stays on your device —
-				nothing is uploaded.
+				<LockIcon aria-hidden="true" className="size-3.5" /> Everything stays on
+				your device — nothing is uploaded.
 			</p>
 		</div>
 	);

@@ -66,12 +66,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 					>
 						Try again
 					</button>
-					<a
-						href="/"
+					<Link
+						to="/"
 						className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
 					>
 						Go home
-					</a>
+					</Link>
 				</div>
 			</div>
 		</div>
@@ -167,6 +167,12 @@ function RootShell({ children }: { children: ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
+				<a
+					href="#main-content"
+					className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-booth-ink focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-booth-paper"
+				>
+					Skip to main content
+				</a>
 				<Toaster
 					position="bottom-center"
 					toastOptions={{

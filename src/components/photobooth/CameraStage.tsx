@@ -40,6 +40,8 @@ export function CameraStage({
 		>
 			<video
 				ref={videoRef}
+				aria-label="Camera preview"
+				aria-hidden={status !== "ready" || undefined}
 				playsInline
 				muted
 				autoPlay
@@ -88,7 +90,12 @@ export function CameraStage({
 			{phase === "countdown" && <CountdownOverlay count={count} />}
 
 			{shooting && (
-				<div className="absolute left-4 top-4 rounded-full bg-booth-ink/55 px-4 py-1.5 font-mono text-sm font-semibold tracking-widest text-booth-paper backdrop-blur-sm">
+				<div
+					role="status"
+					aria-live="polite"
+					aria-label={`Photo ${Math.min(shotIndex + 1, SHOT_COUNT)} of ${SHOT_COUNT}`}
+					className="absolute left-4 top-4 rounded-full bg-booth-ink/55 px-4 py-1.5 font-mono text-sm font-semibold tracking-widest text-booth-paper backdrop-blur-sm"
+				>
 					{Math.min(shotIndex + 1, SHOT_COUNT)} / {SHOT_COUNT}
 				</div>
 			)}
