@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { renderStrip, STRIP_H, STRIP_W } from "@/lib/photobooth/renderStrip";
 import type { StripTheme } from "@/lib/photobooth/themes";
 
@@ -17,12 +18,31 @@ export function StripPreview({
 	const onCanvasRef = useRef(onCanvas);
 	onCanvasRef.current = onCanvas;
 
+	const render = useDebouncedCallback(
+		(p: HTMLCanvasElement[], t: StripTheme, c: string) => {
+			const canvas = renderStrip({ photos: p, theme: t, caption: c, scale: 2 });
+			onCanvasRef.current?.(canvas);
+			canvas.toBlob(
+				(blob) => {
+					if (!blob) return;
+					const next = URL.createObjectURL(blob);
+					setUrl((prev) => {
+						if (prev) URL.revokeObjectURL(prev);
+						return next;
+					});
+				},
+				"image/jpeg",
+				0.85,
+			);
+		},
+		150,
+	);
+
 	useEffect(() => {
 		if (photos.length === 0) return;
-		const canvas = renderStrip({ photos, theme, caption, scale: 2 });
-		onCanvasRef.current?.(canvas);
-		setUrl(canvas.toDataURL("image/png"));
-	}, [photos, theme, caption]);
+		render(photos, theme, caption);
+		return () => render.cancel();
+	}, [photos, theme, caption, render]);
 
 	return (
 		<div

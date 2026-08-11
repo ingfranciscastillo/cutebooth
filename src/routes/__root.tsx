@@ -1,3 +1,5 @@
+import baloo700 from "@fontsource/baloo-2/files/baloo-2-latin-700-normal.woff2?url";
+import nunito600 from "@fontsource/nunito/files/nunito-latin-600-normal.woff2?url";
 import {
 	createRootRoute,
 	HeadContent,
@@ -110,6 +112,20 @@ export const Route = createRootRoute({
 			],
 			links: [
 				{ rel: "stylesheet", href: appCss },
+				{
+					rel: "preload",
+					as: "font",
+					type: "font/woff2",
+					href: baloo700,
+					crossorigin: "anonymous",
+				},
+				{
+					rel: "preload",
+					as: "font",
+					type: "font/woff2",
+					href: nunito600,
+					crossorigin: "anonymous",
+				},
 				{ rel: "canonical", href: baseUrl },
 				{ rel: "icon", href: "/logo.png", type: "image/png" },
 				{ rel: "apple-touch-icon", href: "/logo.png" },
