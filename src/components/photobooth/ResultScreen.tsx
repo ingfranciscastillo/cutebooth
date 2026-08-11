@@ -73,7 +73,7 @@ export function ResultScreen({
 						Looking good.
 					</h2>
 					<p className="mt-1 text-booth-ink/60">
-						Switch the frame or reword the caption — it re-prints instantly.
+						One last touch, then it's yours.
 					</p>
 				</div>
 
@@ -94,31 +94,39 @@ export function ResultScreen({
 					/>
 				</div>
 
-				<ThemePicker value={theme} onChange={onThemeChange} />
+				<div className="space-y-3">
+					<p className="font-mono text-xs font-semibold tracking-[0.2em] text-booth-ink/50">
+						FRAME
+					</p>
+
+					<ThemePicker value={theme} onChange={onThemeChange} />
+				</div>
 
 				<div className="flex flex-col gap-3 md:flex-row md:flex-wrap">
 					<button
 						type="button"
 						onClick={download}
 						disabled={saving}
-						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3 font-display text-base font-bold text-booth-paper shadow-booth transition-transform hover:scale-105 active:scale-95 disabled:opacity-60 md:w-auto md:py-3.5 md:text-lg"
+						className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-booth-accent px-7 py-3.5 font-display text-lg font-bold text-booth-paper shadow-booth transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 md:basis-full"
 					>
-						<DownloadMinimalisticIcon className="size-5" /> Download PNG
+						<DownloadMinimalisticIcon className="size-5" /> Save photo
 					</button>
+
 					{canShare && (
 						<button
 							type="button"
 							onClick={share}
 							disabled={sharing}
-							className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60 md:w-auto md:py-3.5 md:text-lg"
+							className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-6 py-2.5 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 disabled:opacity-60 md:w-auto md:flex-1"
 						>
 							<ShareIcon className="size-5" /> Share
 						</button>
 					)}
+
 					<button
 						type="button"
 						onClick={onRestart}
-						className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-7 py-3 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 md:w-auto md:py-3.5 md:text-lg"
+						className="inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-booth-ink/15 px-6 py-2.5 font-display text-base font-bold text-booth-ink transition-colors hover:border-booth-ink/40 md:w-auto md:flex-1"
 					>
 						<RestartIcon className="size-5" /> Take another
 					</button>

@@ -4,12 +4,12 @@ import { LockIcon } from "@solar-icons/react/bold/lock";
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (
 		<div className="animate-fade-in flex flex-col items-center text-center">
-			<div className="flex items-center">
+			<div className="flex items-center gap-0">
 				<span className="relative flex size-14 shrink-0 items-center justify-center sm:size-20">
 					<span className="booth-camera-flash absolute inset-0 rounded-full bg-booth-accent/50" />
 					<CameraIcon className="booth-camera-snap relative size-9 text-booth-ink sm:size-14" />
 				</span>
-				<h1 className="mt-6 font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
+				<h1 className="font-display text-6xl font-bold leading-[0.95] text-booth-ink sm:text-8xl">
 					photo
 					<span className="text-booth-accent">booth</span>
 				</h1>

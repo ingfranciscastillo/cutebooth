@@ -107,7 +107,7 @@ function Index() {
 							</button>
 							<div className="flex items-center gap-3">
 								<p className="font-mono text-xs font-semibold tracking-[0.3em] text-booth-ink/45">
-									{shooting ? "SMILE!" : `PICK A FRAME · ${SHOT_COUNT} SHOTS`}
+									{shooting ? "SMILE!" : `GET READY · ${SHOT_COUNT} SHOTS`}
 								</p>
 								<button
 									type="button"
