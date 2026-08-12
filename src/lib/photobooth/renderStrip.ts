@@ -187,7 +187,7 @@ export function renderStrip({
 	const canvas = document.createElement("canvas");
 	canvas.width = STRIP_W * scale;
 	canvas.height = STRIP_H * scale;
-	const ctx = canvas.getContext("2d");
+	const ctx = canvas.getContext("2d", { willReadFrequently: true });
 	if (!ctx) {
 		throw new Error("2D canvas context unavailable");
 	}
