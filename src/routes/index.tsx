@@ -8,24 +8,39 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { CameraStage } from "@/components/photobooth/CameraStage";
+import { ConfirmDialog } from "@/components/photobooth/ConfirmDialog";
+import { DevelopingStrip } from "@/components/photobooth/DevelopingStrip";
+import {
+	FormatPicker,
+	ShotCountPicker,
+} from "@/components/photobooth/FormatPicker";
 import { LandingScreen } from "@/components/photobooth/LandingScreen";
 import { ResultScreen } from "@/components/photobooth/ResultScreen";
+import { DEFAULT_FORMAT_STATE } from "@/lib/photobooth/constants";
+import type { ShotCount, StripFormat } from "@/lib/photobooth/layouts";
 import { DEFAULT_THEME, type StripTheme } from "@/lib/photobooth/themes";
 import { useCamera } from "@/lib/photobooth/useCamera";
-import { SHOT_COUNT, useSession } from "@/lib/photobooth/useSession";
+import { useSession } from "@/lib/photobooth/useSession";
 import { useSound } from "@/lib/photobooth/useSound";
 
 export const Route = createFileRoute("/")({
 	component: Index,
 });
 
-type Stage = "landing" | "booth" | "result";
+type Stage = "landing" | "booth" | "developing" | "result";
 
 function Index() {
 	const [stage, setStage] = useState<Stage>("landing");
 	const [theme, setTheme] = useState<StripTheme>(DEFAULT_THEME);
 	const [caption, setCaption] = useState("KEEP YOURSELF ALIVE");
 	const [photos, setPhotos] = useState<HTMLCanvasElement[]>([]);
+	const [format, setFormat] = useState<StripFormat>(
+		DEFAULT_FORMAT_STATE.format,
+	);
+	const [shotCount, setShotCount] = useState<ShotCount>(
+		DEFAULT_FORMAT_STATE.shotCount,
+	);
+	const [confirmRetake, setConfirmRetake] = useState(false);
 
 	const {
 		videoRef,
@@ -42,7 +57,7 @@ function Index() {
 	const handleComplete = useCallback(
 		(shots: HTMLCanvasElement[]) => {
 			setPhotos(shots);
-			setStage("result");
+			setStage("developing");
 			stopCamera();
 		},
 		[stopCamera],
@@ -50,6 +65,7 @@ function Index() {
 
 	const session = useSession(videoRef, handleComplete, {
 		mirror: facing === "user",
+		shotCount,
 		onTick: beep,
 		onShutter: shutter,
 	});
@@ -59,6 +75,13 @@ function Index() {
 		setPhotos([]);
 		reset();
 		setStage("booth");
+	};
+
+	const askRetake = () => setConfirmRetake(true);
+
+	const confirmedRetake = () => {
+		setConfirmRetake(false);
+		enterBooth();
 	};
 
 	useEffect(() => {
@@ -98,7 +121,7 @@ function Index() {
 							</button>
 							<div className="flex min-w-0 items-center gap-2">
 								<p className="truncate font-mono text-[10px] font-semibold tracking-[0.2em] text-booth-ink/45 sm:text-xs sm:tracking-[0.3em]">
-									{shooting ? "SMILE!" : `GET READY · ${SHOT_COUNT} SHOTS`}
+									{shooting ? "SMILE!" : `GET READY · ${shotCount} SHOTS`}
 								</p>
 								<button
 									type="button"
@@ -129,10 +152,13 @@ function Index() {
 							shotIndex={session.shotIndex}
 							preview={session.preview}
 							mirrored={facing === "user"}
+							shotCount={shotCount}
 						/>
 
 						{!shooting ? (
 							<div className="space-y-5">
+								<ShotCountPicker value={shotCount} onChange={setShotCount} />
+								<FormatPicker value={format} onChange={setFormat} />
 								{hasMultipleCameras && (
 									<div className="flex justify-center">
 										<div className="inline-flex items-center gap-1 rounded-full border-2 border-booth-ink/15 p-1">
@@ -174,7 +200,7 @@ function Index() {
 							<div className="flex justify-center">
 								<button
 									type="button"
-									onClick={reset}
+									onClick={askRetake}
 									className="rounded-full border-2 border-booth-ink/15 px-6 py-3 text-sm font-bold text-booth-ink/70 transition-colors hover:border-booth-ink/40"
 								>
 									Cancel &amp; retake session
@@ -184,6 +210,17 @@ function Index() {
 					</div>
 				)}
 
+				{stage === "developing" && (
+					<DevelopingStrip
+						photos={photos}
+						theme={theme}
+						caption={caption}
+						format={format}
+						shotCount={shotCount}
+						onDone={() => setStage("result")}
+					/>
+				)}
+
 				{stage === "result" && (
 					<ResultScreen
 						photos={photos}
@@ -191,10 +228,22 @@ function Index() {
 						onThemeChange={setTheme}
 						caption={caption}
 						onCaptionChange={setCaption}
-						onRestart={enterBooth}
+						format={format}
+						onFormatChange={setFormat}
+						shotCount={shotCount}
+						onRestart={askRetake}
 					/>
 				)}
 			</div>
+			<ConfirmDialog
+				open={confirmRetake}
+				onOpenChange={setConfirmRetake}
+				title="Retake the whole session?"
+				description={`This clears the ${photos.length || shotCount} photo${
+					(photos.length || shotCount) === 1 ? "" : "s"
+				} from this session and starts a fresh one. There's no undo.`}
+				onConfirm={confirmedRetake}
+			/>
 		</main>
 	);
 }

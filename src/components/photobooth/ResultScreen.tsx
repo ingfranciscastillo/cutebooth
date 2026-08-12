@@ -5,8 +5,10 @@ import {
 } from "@solar-icons/react/bold";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import type { ShotCount, StripFormat } from "@/lib/photobooth/layouts";
 import { canShareFiles, shareStrip } from "@/lib/photobooth/share";
 import type { StripTheme } from "@/lib/photobooth/themes";
+import { FormatPicker } from "./FormatPicker";
 import { StripPreview } from "./StripPreview";
 import { ThemePicker } from "./ThemePicker";
 
@@ -16,6 +18,9 @@ export function ResultScreen({
 	onThemeChange,
 	caption,
 	onCaptionChange,
+	format,
+	onFormatChange,
+	shotCount,
 	onRestart,
 }: {
 	photos: HTMLCanvasElement[];
@@ -23,6 +28,9 @@ export function ResultScreen({
 	onThemeChange: (t: StripTheme) => void;
 	caption: string;
 	onCaptionChange: (c: string) => void;
+	format: StripFormat;
+	onFormatChange: (f: StripFormat) => void;
+	shotCount: ShotCount;
 	onRestart: () => void;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -98,6 +106,8 @@ export function ResultScreen({
 				photos={photos}
 				theme={theme}
 				caption={caption}
+				format={format}
+				shotCount={shotCount}
 				onCanvas={(c) => (canvasRef.current = c)}
 			/>
 
@@ -142,6 +152,13 @@ export function ResultScreen({
 							{caption.length === 28 ? "MAX" : `${caption.length} / 28`}
 						</span>
 					</div>
+				</div>
+
+				<div className="space-y-3">
+					<p className="font-mono text-xs font-semibold tracking-[0.2em] text-booth-ink/50">
+						FORMAT
+					</p>
+					<FormatPicker value={format} onChange={onFormatChange} />
 				</div>
 
 				<div className="space-y-3">

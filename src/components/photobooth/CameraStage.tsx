@@ -4,7 +4,6 @@ import {
 	type CameraError,
 	type CameraStatus,
 } from "@/lib/photobooth/useCamera";
-import { SHOT_COUNT } from "@/lib/photobooth/useSession";
 import { CountdownOverlay } from "./CountdownOverlay";
 
 type Props = {
@@ -17,6 +16,7 @@ type Props = {
 	shotIndex: number;
 	preview: string | null;
 	mirrored?: boolean;
+	shotCount: number;
 };
 
 export function CameraStage({
@@ -29,6 +29,7 @@ export function CameraStage({
 	shotIndex,
 	preview,
 	mirrored = true,
+	shotCount,
 }: Props) {
 	const shooting = phase !== "idle" && phase !== "done";
 
@@ -93,10 +94,10 @@ export function CameraStage({
 				<div
 					role="status"
 					aria-live="polite"
-					aria-label={`Photo ${Math.min(shotIndex + 1, SHOT_COUNT)} of ${SHOT_COUNT}`}
+					aria-label={`Photo ${Math.min(shotIndex + 1, shotCount)} of ${shotCount}`}
 					className="absolute left-4 top-4 rounded-full bg-booth-ink/55 px-4 py-1.5 font-mono text-sm font-semibold tracking-widest text-booth-paper backdrop-blur-sm"
 				>
-					{Math.min(shotIndex + 1, SHOT_COUNT)} / {SHOT_COUNT}
+					{Math.min(shotIndex + 1, shotCount)} / {shotCount}
 				</div>
 			)}
 

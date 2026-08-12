@@ -36,6 +36,7 @@ function captureFrame(video: HTMLVideoElement, mirror: boolean) {
 
 type Options = {
 	mirror?: boolean;
+	shotCount?: number;
 	onTick?: () => void;
 	onShutter?: () => void;
 };
@@ -92,7 +93,8 @@ export function useSession(
 				setPreview(frame ? frame.toDataURL("image/jpeg", 0.92) : null);
 				later(() => setPhase("review"), 260);
 				later(() => {
-					if (photosRef.current.length >= SHOT_COUNT) {
+					const target = optionsRef.current.shotCount ?? SHOT_COUNT;
+					if (photosRef.current.length >= target) {
 						setPhase("done");
 						onCompleteRef.current(photosRef.current);
 					} else {
