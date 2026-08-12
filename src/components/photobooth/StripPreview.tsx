@@ -39,9 +39,16 @@ export function StripPreview({
 	);
 
 	useEffect(() => {
-		if (photos.length === 0) return;
+		if (photos.length === 0) {
+			render.cancel();
+			return;
+		}
+
 		render(photos, theme, caption);
-		return () => render.cancel();
+
+		return () => {
+			render.cancel();
+		};
 	}, [photos, theme, caption, render]);
 
 	return (
