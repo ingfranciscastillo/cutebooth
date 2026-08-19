@@ -22,6 +22,7 @@ export function ResultScreen({
 	format,
 	onFormatChange,
 	shotCount,
+	aspect,
 	onRestart,
 }: {
 	photos: HTMLCanvasElement[];
@@ -33,7 +34,6 @@ export function ResultScreen({
 	onFormatChange: (f: StripFormat) => void;
 	shotCount: ShotCount;
 	aspect: AspectId;
-	onAspectChange: (a: AspectId) => void;
 	onRestart: () => void;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -111,6 +111,7 @@ export function ResultScreen({
 				caption={caption}
 				format={format}
 				shotCount={shotCount}
+				aspect={aspect}
 				onCanvas={(c) => (canvasRef.current = c)}
 			/>
 

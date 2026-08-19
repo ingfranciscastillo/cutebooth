@@ -235,7 +235,6 @@ function Index() {
 						onFormatChange={setFormat}
 						shotCount={shotCount}
 						aspect={aspect}
-						onAspectChange={setAspect}
 						onRestart={askRetake}
 					/>
 				)}
