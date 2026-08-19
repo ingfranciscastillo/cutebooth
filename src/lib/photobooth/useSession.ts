@@ -1,20 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PHOTO_ASPECT } from "./renderStrip";
+import { type AspectId, DEFAULT_ASPECT, getAspect } from "./aspects";
 
 export const SHOT_COUNT = 4;
 
 type Phase = "idle" | "countdown" | "flash" | "review" | "done";
 
-function captureFrame(video: HTMLVideoElement, mirror: boolean) {
+function captureFrame(
+	video: HTMLVideoElement,
+	mirror: boolean,
+	aspect: number,
+) {
 	const vw = video.videoWidth;
 	const vh = video.videoHeight;
 	if (!vw || !vh) return null;
 	// center-crop to the strip cell aspect
 	let sw = vw;
-	let sh = Math.round(vw / PHOTO_ASPECT);
+	let sh = Math.round(vw / aspect);
 	if (sh > vh) {
 		sh = vh;
-		sw = Math.round(vh * PHOTO_ASPECT);
+		sw = Math.round(vh * aspect);
 	}
 	const sx = (vw - sw) / 2;
 	const sy = (vh - sh) / 2;
@@ -37,6 +41,7 @@ function captureFrame(video: HTMLVideoElement, mirror: boolean) {
 type Options = {
 	mirror?: boolean;
 	shotCount?: number;
+	aspect?: AspectId;
 	onTick?: () => void;
 	onShutter?: () => void;
 };
@@ -84,8 +89,15 @@ export function useSession(
 			}, 2000);
 			later(() => {
 				const video = videoRef.current;
+				const aspectValue = getAspect(
+					optionsRef.current.aspect ?? DEFAULT_ASPECT,
+				).value;
 				const frame = video
-					? captureFrame(video, optionsRef.current.mirror !== false)
+					? captureFrame(
+							video,
+							optionsRef.current.mirror !== false,
+							aspectValue,
+						)
 					: null;
 				if (frame) photosRef.current.push(frame);
 				optionsRef.current.onShutter?.();

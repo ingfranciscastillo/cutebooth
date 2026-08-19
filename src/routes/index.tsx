@@ -7,12 +7,14 @@ import {
 } from "@solar-icons/react/outline";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
+import { AspectPicker } from "@/components/photobooth/AspectPicker";
 import { CameraStage } from "@/components/photobooth/CameraStage";
 import { ConfirmDialog } from "@/components/photobooth/ConfirmDialog";
 import { DevelopingStrip } from "@/components/photobooth/DevelopingStrip";
 import { ShotCountPicker } from "@/components/photobooth/FormatPicker";
 import { LandingScreen } from "@/components/photobooth/LandingScreen";
 import { ResultScreen } from "@/components/photobooth/ResultScreen";
+import type { AspectId } from "@/lib/photobooth/aspects";
 import { DEFAULT_FORMAT_STATE } from "@/lib/photobooth/constants";
 import type { ShotCount, StripFormat } from "@/lib/photobooth/layouts";
 import { DEFAULT_THEME, type StripTheme } from "@/lib/photobooth/themes";
@@ -37,6 +39,7 @@ function Index() {
 	const [shotCount, setShotCount] = useState<ShotCount>(
 		DEFAULT_FORMAT_STATE.shotCount,
 	);
+	const [aspect, setAspect] = useState<AspectId>(DEFAULT_FORMAT_STATE.aspect);
 	const [confirmRetake, setConfirmRetake] = useState(false);
 
 	const {
@@ -63,6 +66,7 @@ function Index() {
 	const session = useSession(videoRef, handleComplete, {
 		mirror: facing === "user",
 		shotCount,
+		aspect,
 		onTick: beep,
 		onShutter: shutter,
 	});
@@ -150,11 +154,13 @@ function Index() {
 							preview={session.preview}
 							mirrored={facing === "user"}
 							shotCount={shotCount}
+							aspect={aspect}
 						/>
 
 						{!shooting ? (
 							<div className="space-y-5">
 								<ShotCountPicker value={shotCount} onChange={setShotCount} />
+								<AspectPicker value={aspect} onChange={setAspect} />
 								{hasMultipleCameras && (
 									<div className="flex justify-center">
 										<div className="inline-flex items-center gap-1 rounded-full border-2 border-booth-ink/15 p-1">
@@ -213,6 +219,7 @@ function Index() {
 						caption={caption}
 						format={format}
 						shotCount={shotCount}
+						aspect={aspect}
 						onDone={() => setStage("result")}
 					/>
 				)}
@@ -227,6 +234,8 @@ function Index() {
 						format={format}
 						onFormatChange={setFormat}
 						shotCount={shotCount}
+						aspect={aspect}
+						onAspectChange={setAspect}
 						onRestart={askRetake}
 					/>
 				)}

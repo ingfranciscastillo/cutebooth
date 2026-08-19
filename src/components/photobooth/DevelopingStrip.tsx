@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { type AspectId, DEFAULT_ASPECT } from "@/lib/photobooth/aspects";
 import {
 	getLayout,
 	type ShotCount,
@@ -15,6 +16,7 @@ export function DevelopingStrip({
 	caption,
 	format,
 	shotCount,
+	aspect = DEFAULT_ASPECT,
 	onDone,
 }: {
 	photos: HTMLCanvasElement[];
@@ -22,10 +24,11 @@ export function DevelopingStrip({
 	caption: string;
 	format: StripFormat;
 	shotCount: ShotCount;
+	aspect?: AspectId;
 	onDone: () => void;
 }) {
 	const [url, setUrl] = useState<string | null>(null);
-	const layout = getLayout(format, shotCount);
+	const layout = getLayout(format, shotCount, aspect);
 	const doneRef = useRef(onDone);
 	doneRef.current = onDone;
 
@@ -37,10 +40,12 @@ export function DevelopingStrip({
 			caption,
 			format,
 			shotCount,
+			aspect,
 			scale: 2,
 		});
+
 		setUrl(canvas.toDataURL("image/png"));
-	}, [photos, theme, caption, format, shotCount]);
+	}, [photos, theme, caption, format, shotCount, aspect]);
 
 	useEffect(() => {
 		const reduced =

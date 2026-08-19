@@ -1,5 +1,10 @@
 import { CameraIcon, LockIcon, RefreshIcon } from "@solar-icons/react/outline";
 import {
+	type AspectId,
+	DEFAULT_ASPECT,
+	getAspect,
+} from "@/lib/photobooth/aspects";
+import {
 	CAMERA_MESSAGES,
 	type CameraError,
 	type CameraStatus,
@@ -17,6 +22,7 @@ type Props = {
 	preview: string | null;
 	mirrored?: boolean;
 	shotCount: number;
+	aspect?: AspectId;
 };
 
 export function CameraStage({
@@ -30,12 +36,14 @@ export function CameraStage({
 	preview,
 	mirrored = true,
 	shotCount,
+	aspect = DEFAULT_ASPECT,
 }: Props) {
 	const shooting = phase !== "idle" && phase !== "done";
 
 	return (
 		<div
-			className={`relative aspect-4/3 w-full overflow-hidden rounded-4xl border-4 border-booth-ink/10 bg-booth-ink shadow-booth-lg ${
+			style={{ aspectRatio: String(getAspect(aspect).value) }}
+			className={`relative mx-auto h-auto max-h-[62vh] w-auto max-w-full overflow-hidden rounded-[2rem] border-4 border-booth-ink/10 bg-booth-ink shadow-booth-lg ${
 				phase === "flash" ? "animate-shutter-shake" : ""
 			}`}
 		>
@@ -102,21 +110,14 @@ export function CameraStage({
 			)}
 
 			{status === "ready" && !shooting && (
-				<div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-booth-ink/55 px-3 py-1.5 text-xs font-semibold tracking-wide text-booth-paper backdrop-blur-sm">
-					<span className="size-2 animate-pulse rounded-full bg-booth-accent" />{" "}
-					LIVE
-				</div>
-			)}
-
-			{status === "ready" && !shooting && (
 				<>
 					<div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-booth-ink/55 px-3 py-1.5 text-xs font-semibold tracking-wide text-booth-paper backdrop-blur-sm">
 						<span className="size-2 animate-pulse rounded-full bg-booth-accent" />{" "}
 						LIVE
 					</div>
-					<div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-booth-ink/55 px-3 py-1.5 text-xs font-medium text-booth-paper/80 backdrop-blur-sm">
-						<LockIcon aria-hidden="true" className="size-3" /> Nothing is
-						uploaded — it all stays on your device.
+					<div className="absolute bottom-4 left-1/2 flex max-w-[85%] -translate-x-1/2 items-start gap-1.5 rounded-2xl bg-booth-ink/55 px-3 py-2 text-left text-[11px] font-medium leading-snug text-booth-paper/80 backdrop-blur-sm">
+						<LockIcon aria-hidden="true" className="mt-0.5 size-3 shrink-0" />
+						<span>Nothing is uploaded — it all stays on your device.</span>
 					</div>
 				</>
 			)}

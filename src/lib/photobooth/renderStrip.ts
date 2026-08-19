@@ -1,3 +1,4 @@
+import { type AspectId, DEFAULT_ASPECT } from "./aspects";
 import {
 	getLayout,
 	type Layout,
@@ -15,11 +16,16 @@ export type StripOptions = {
 	caption: string;
 	format?: StripFormat;
 	shotCount?: ShotCount | number;
+	aspect?: AspectId;
 	scale?: number;
 };
 
-export function getStripSize(format: StripFormat, shotCount: number) {
-	const l = getLayout(format, shotCount);
+export function getStripSize(
+	format: StripFormat,
+	shotCount: number,
+	aspect: AspectId = DEFAULT_ASPECT,
+) {
+	const l = getLayout(format, shotCount, aspect);
 	return { width: l.width, height: l.height };
 }
 
@@ -305,10 +311,11 @@ export function renderStrip({
 	caption,
 	format = "vertical",
 	shotCount,
+	aspect = DEFAULT_ASPECT,
 	scale = 2,
 }: StripOptions) {
 	const n = shotCount ?? photos.length ?? 4;
-	const layout = getLayout(format, n);
+	const layout = getLayout(format, n, aspect);
 	const { width: W, height: H, unit } = layout;
 
 	const canvas = document.createElement("canvas");
@@ -346,6 +353,7 @@ export function renderStrip({
 		}
 
 		if (cell.polaroid) {
+			// instant card
 			ctx.save();
 			ctx.shadowColor = "rgba(0,0,0,0.22)";
 			ctx.shadowBlur = 16;
@@ -355,18 +363,38 @@ export function renderStrip({
 			ctx.fill();
 			ctx.restore();
 
-			const img = cell.w - POLAROID.BORDER * 2;
+			const imgW = cell.imgW ?? cell.w - POLAROID.BORDER * 2;
+			const imgH = cell.imgH ?? imgW;
 			drawPhoto(
 				ctx,
 				theme,
 				photo,
-				cell.x + POLAROID.BORDER,
+				cell.x + (cell.w - imgW) / 2,
 				cell.y + POLAROID.BORDER,
-				img,
-				img,
+				imgW,
+				imgH,
 				3,
 				scale,
 			);
+
+			// lip text
+			ctx.save();
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			const lipY = cell.y + POLAROID.BORDER + imgH + POLAROID.LIP / 2 + 2;
+			if (i === 0 && text) {
+				ctx.fillStyle = "#1b1b1b";
+				ctx.font = "700 17px 'Baloo 2', system-ui, sans-serif";
+				ctx.letterSpacing = "1px";
+				ctx.fillText(text, cell.x + cell.w / 2, lipY);
+			} else {
+				ctx.fillStyle = "rgba(27,27,27,0.55)";
+				ctx.font = "500 12px 'DM Mono', ui-monospace, monospace";
+				ctx.letterSpacing = "3px";
+				ctx.fillText(stamp, cell.x + cell.w / 2, lipY);
+			}
+			ctx.letterSpacing = "0px";
+			ctx.restore();
 		} else {
 			drawPhoto(
 				ctx,

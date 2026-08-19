@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { type AspectId, DEFAULT_ASPECT } from "@/lib/photobooth/aspects";
 import {
 	getLayout,
 	type ShotCount,
@@ -14,19 +15,23 @@ export function StripPreview({
 	caption,
 	format,
 	shotCount,
+	aspect = DEFAULT_ASPECT,
 	onCanvas,
+	className,
 }: {
 	photos: HTMLCanvasElement[];
 	theme: StripTheme;
 	caption: string;
 	format: StripFormat;
 	shotCount: ShotCount;
+	aspect?: AspectId;
 	onCanvas?: (canvas: HTMLCanvasElement) => void;
+	className?: string;
 }) {
 	const [url, setUrl] = useState<string | null>(null);
 	const onCanvasRef = useRef(onCanvas);
 	onCanvasRef.current = onCanvas;
-	const layout = getLayout(format, shotCount);
+	const layout = getLayout(format, shotCount, aspect);
 
 	const render = useDebouncedCallback(
 		(
@@ -35,6 +40,7 @@ export function StripPreview({
 			c: string,
 			f: StripFormat,
 			sc: ShotCount,
+			a: AspectId,
 		) => {
 			const canvas = renderStrip({
 				photos: p,
@@ -42,6 +48,7 @@ export function StripPreview({
 				caption: c,
 				format: f,
 				shotCount: sc,
+				aspect: a,
 				scale: 2,
 			});
 			onCanvasRef.current?.(canvas);
@@ -67,16 +74,18 @@ export function StripPreview({
 			return;
 		}
 
-		render(photos, theme, caption, format, shotCount);
+		render(photos, theme, caption, format, shotCount, aspect);
 
 		return () => {
 			render.cancel();
 		};
-	}, [photos, theme, caption, render, format, shotCount]);
+	}, [photos, theme, caption, render, format, shotCount, aspect]);
 
 	return (
 		<div
-			className="animate-scale-in relative mx-auto w-full max-w-[320px] overflow-hidden rounded-xl shadow-booth-lg"
+			className={`animate-scale-in relative mx-auto w-full overflow-hidden rounded-xl shadow-booth-lg ${
+				className ?? (format === "vertical" ? "max-w-[320px]" : "max-w-130")
+			}`}
 			style={{
 				aspectRatio: `${layout.width} / ${layout.height}`,
 				backgroundColor: theme.paper,

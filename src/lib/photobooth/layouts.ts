@@ -1,3 +1,5 @@
+import { type AspectId, DEFAULT_ASPECT, getAspect } from "./aspects";
+
 export type StripFormat = "vertical" | "horizontal" | "square" | "polaroid";
 export type ShotCount = 2 | 4 | 6;
 
@@ -19,6 +21,9 @@ export type Cell = {
 	rotate?: number;
 	/** draw a white instant-photo card around the image */
 	polaroid?: boolean;
+	/** polaroid: inner image window size (image may be smaller than the card if aspect doesn't fill it) */
+	imgW?: number;
+	imgH?: number;
 };
 
 export type Layout = {
@@ -37,33 +42,46 @@ export type Layout = {
 	lipText: boolean;
 };
 
-const ASPECT = 4 / 3;
-
 function grid(n: number) {
 	if (n <= 2) return { cols: 2, rows: 1 };
 	if (n <= 4) return { cols: 2, rows: 2 };
 	return { cols: 3, rows: 2 };
 }
 
-function vertical(n: number): Layout {
+/** cell size for a target aspect, capped so tall ratios don't create endless sheets */
+function cell(maxW: number, maxH: number, aspect: number) {
+	let w = maxW;
+	let h = w / aspect;
+	if (h > maxH) {
+		h = maxH;
+		w = h * aspect;
+	}
+	return { w: Math.round(w), h: Math.round(h) };
+}
+
+function vertical(n: number, aspect: number): Layout {
 	const W = 600;
 	const PAD = 26;
 	const GAP = 14;
 	const HEADER = 54;
 	const FOOTER = 132;
 
+	// custom 2x3 grid for 6 shots — keeps the strip from becoming an
+	// endless single-column sheet instead of stacking all 6 vertically
 	if (n === 6) {
 		const cols = 2;
 		const rows = 3;
 		const areaW = W - PAD * 2;
-		const cellW = (areaW - GAP * (cols - 1)) / cols;
-		const cellH = Math.round(cellW / ASPECT);
+		const boxW = (areaW - GAP * (cols - 1)) / cols;
+		// 250 cap ~= the original fixed 4:3 height (200px) with headroom for other aspects
+		const { w: cellW, h: cellH } = cell(boxW, 250, aspect);
+		const offX = (boxW - cellW) / 2;
 		const cells: Cell[] = [];
 		for (let i = 0; i < n; i++) {
 			const c = i % cols;
 			const r = Math.floor(i / cols);
 			cells.push({
-				x: PAD + c * (cellW + GAP),
+				x: PAD + c * (boxW + GAP) + offX,
 				y: HEADER + r * (cellH + GAP),
 				w: cellW,
 				h: cellH,
@@ -86,12 +104,13 @@ function vertical(n: number): Layout {
 		};
 	}
 
-	const pw = W - PAD * 2;
-	const ph = Math.round(pw / ASPECT);
+	const maxH = n <= 2 ? 660 : 440;
+	const { w: pw, h: ph } = cell(W - PAD * 2, maxH, aspect);
+	const left = Math.round((W - pw) / 2);
 	const H = PAD + HEADER + ph * n + GAP * (n - 1) + FOOTER;
 	const cells: Cell[] = [];
 	for (let i = 0; i < n; i++)
-		cells.push({ x: PAD, y: HEADER + i * (ph + GAP), w: pw, h: ph });
+		cells.push({ x: left, y: HEADER + i * (ph + GAP), w: pw, h: ph });
 	const footTop = HEADER + n * ph + (n - 1) * GAP;
 	return {
 		format: "vertical",
@@ -108,15 +127,14 @@ function vertical(n: number): Layout {
 	};
 }
 
-function horizontal(n: number): Layout {
+function horizontal(n: number, aspect: number): Layout {
 	const PAD = 28;
 	const GAP = 14;
 	const HEADER = 54;
 	const FOOTER = 120;
 	const cols = n <= 4 ? n : 3;
 	const rows = Math.ceil(n / cols);
-	const pw = 300;
-	const ph = Math.round(pw / ASPECT);
+	const { w: pw, h: ph } = cell(300, rows === 1 ? 460 : 340, aspect);
 	const W = PAD * 2 + cols * pw + GAP * (cols - 1);
 	const H = HEADER + rows * ph + GAP * (rows - 1) + FOOTER;
 	const cells: Cell[] = [];
@@ -146,7 +164,7 @@ function horizontal(n: number): Layout {
 	};
 }
 
-function square(n: number): Layout {
+function square(n: number, aspect: number): Layout {
 	const S = 1080;
 	const M = 68;
 	const GAP = 18;
@@ -156,27 +174,33 @@ function square(n: number): Layout {
 	const areaW = S - M * 2;
 	const areaH = S - BAND - TOP;
 
-	const cell = Math.min(
+	// force uniform SQUARE boxes (grid-of-squares look), same as before —
+	// then fit the chosen photo aspect inside each square box, centered
+	const box = Math.min(
 		(areaW - GAP * (cols - 1)) / cols,
 		(areaH - GAP * (rows - 1)) / rows,
 	);
-	const gridW = cols * cell + GAP * (cols - 1);
-	const gridH = rows * cell + GAP * (rows - 1);
+	const gridW = cols * box + GAP * (cols - 1);
+	const gridH = rows * box + GAP * (rows - 1);
 	const startX = M + (areaW - gridW) / 2;
 	const startY = TOP + (areaH - gridH) / 2;
+
+	const { w: pw, h: ph } = cell(box, box, aspect);
+	const offX = (box - pw) / 2;
+	const offY = (box - ph) / 2;
 
 	const cells: Cell[] = [];
 	for (let i = 0; i < n; i++) {
 		const c = i % cols;
 		const r = Math.floor(i / cols);
 		cells.push({
-			x: startX + c * (cell + GAP),
-			y: startY + r * (cell + GAP),
-			w: cell,
-			h: cell,
+			x: startX + c * (box + GAP) + offX,
+			y: startY + r * (box + GAP) + offY,
+			w: pw,
+			h: ph,
 		});
 	}
-	const footTop = startY + rows * cell + (rows - 1) * GAP;
+	const footTop = startY + rows * box + (rows - 1) * GAP;
 	return {
 		format: "square",
 		width: S,
@@ -192,12 +216,12 @@ function square(n: number): Layout {
 	};
 }
 
-function polaroid(n: number): Layout {
-	const CARD_W = 300;
+function polaroid(n: number, aspect: number): Layout {
 	const BORDER = 18;
-	const IMG = CARD_W - BORDER * 2;
 	const LIP = 70;
-	const CARD_H = BORDER + IMG + LIP;
+	const { w: imgW, h: imgH } = cell(264, 420, aspect);
+	const CARD_W = imgW + BORDER * 2;
+	const CARD_H = BORDER + imgH + LIP;
 	const M = 46;
 	const GAP = 28;
 	const HEADER = 62;
@@ -215,6 +239,8 @@ function polaroid(n: number): Layout {
 			y: HEADER + r * (CARD_H + GAP),
 			w: CARD_W,
 			h: CARD_H,
+			imgW,
+			imgH,
 			rotate: ((i % 2 === 0 ? -1 : 1) * 1.3 * Math.PI) / 180,
 			polaroid: true,
 		});
@@ -237,16 +263,21 @@ function polaroid(n: number): Layout {
 
 export const POLAROID = { BORDER: 18, LIP: 70 };
 
-export function getLayout(format: StripFormat, shots: number): Layout {
+export function getLayout(
+	format: StripFormat,
+	shots: number,
+	aspectId: AspectId = DEFAULT_ASPECT,
+): Layout {
 	const n = Math.max(1, shots);
+	const aspect = getAspect(aspectId).value;
 	switch (format) {
 		case "horizontal":
-			return horizontal(n);
+			return horizontal(n, aspect);
 		case "square":
-			return square(n);
+			return square(n, aspect);
 		case "polaroid":
-			return polaroid(n);
+			return polaroid(n, aspect);
 		default:
-			return vertical(n);
+			return vertical(n, aspect);
 	}
 }

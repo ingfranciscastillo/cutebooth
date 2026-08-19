@@ -5,6 +5,7 @@ import {
 } from "@solar-icons/react/bold";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import type { AspectId } from "@/lib/photobooth/aspects";
 import type { ShotCount, StripFormat } from "@/lib/photobooth/layouts";
 import { canShareFiles, shareStrip } from "@/lib/photobooth/share";
 import type { StripTheme } from "@/lib/photobooth/themes";
@@ -31,6 +32,8 @@ export function ResultScreen({
 	format: StripFormat;
 	onFormatChange: (f: StripFormat) => void;
 	shotCount: ShotCount;
+	aspect: AspectId;
+	onAspectChange: (a: AspectId) => void;
 	onRestart: () => void;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
