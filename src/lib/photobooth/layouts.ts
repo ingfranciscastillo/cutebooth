@@ -7,8 +7,8 @@ export const SHOT_COUNTS: ShotCount[] = [2, 4, 6];
 
 export const FORMATS: { id: StripFormat; name: string; hint: string }[] = [
 	{ id: "vertical", name: "Vertical strip", hint: "Classic booth strip" },
-	{ id: "horizontal", name: "Horizontal", hint: "Wide print" },
-	{ id: "square", name: "Square", hint: "1080 for socials" },
+	{ id: "horizontal", name: "Horizontal strip", hint: "Wide print" },
+	{ id: "square", name: "Square", hint: "for socials" },
 	{ id: "polaroid", name: "Polaroid", hint: "Instant cards" },
 ];
 
