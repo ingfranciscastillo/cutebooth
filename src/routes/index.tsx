@@ -1,19 +1,16 @@
+import { PlayIcon } from "@solar-icons/react/bold";
 import {
 	ArrowLeftIcon,
 	CameraRotateIcon,
-	PlayIcon,
 	VolumeCrossIcon,
 	VolumeLoudIcon,
-} from "@solar-icons/react/bold";
+} from "@solar-icons/react/outline";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { CameraStage } from "@/components/photobooth/CameraStage";
 import { ConfirmDialog } from "@/components/photobooth/ConfirmDialog";
 import { DevelopingStrip } from "@/components/photobooth/DevelopingStrip";
-import {
-	FormatPicker,
-	ShotCountPicker,
-} from "@/components/photobooth/FormatPicker";
+import { ShotCountPicker } from "@/components/photobooth/FormatPicker";
 import { LandingScreen } from "@/components/photobooth/LandingScreen";
 import { ResultScreen } from "@/components/photobooth/ResultScreen";
 import { DEFAULT_FORMAT_STATE } from "@/lib/photobooth/constants";
@@ -158,7 +155,6 @@ function Index() {
 						{!shooting ? (
 							<div className="space-y-5">
 								<ShotCountPicker value={shotCount} onChange={setShotCount} />
-								<FormatPicker value={format} onChange={setFormat} />
 								{hasMultipleCameras && (
 									<div className="flex justify-center">
 										<div className="inline-flex items-center gap-1 rounded-full border-2 border-booth-ink/15 p-1">

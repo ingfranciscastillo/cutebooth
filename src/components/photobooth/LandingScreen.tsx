@@ -1,4 +1,4 @@
-import { CameraIcon, LockIcon } from "@solar-icons/react/bold";
+import { CameraIcon } from "@solar-icons/react/bold";
 
 export function LandingScreen({ onStart }: { onStart: () => void }) {
 	return (
@@ -29,11 +29,6 @@ export function LandingScreen({ onStart }: { onStart: () => void }) {
 				<span className="absolute inset-0 animate-booth-glow rounded-full bg-booth-accent" />
 				<span className="relative">START</span>
 			</button>
-
-			<p className="mt-8 inline-flex items-center gap-2 text-sm text-booth-ink/45">
-				<LockIcon aria-hidden="true" className="size-3.5" /> Everything stays on
-				your device — nothing is uploaded.
-			</p>
 		</div>
 	);
 }

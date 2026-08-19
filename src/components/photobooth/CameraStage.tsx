@@ -1,4 +1,4 @@
-import { CameraIcon, RefreshIcon } from "@solar-icons/react/bold";
+import { CameraIcon, LockIcon, RefreshIcon } from "@solar-icons/react/outline";
 import {
 	CAMERA_MESSAGES,
 	type CameraError,
@@ -106,6 +106,19 @@ export function CameraStage({
 					<span className="size-2 animate-pulse rounded-full bg-booth-accent" />{" "}
 					LIVE
 				</div>
+			)}
+
+			{status === "ready" && !shooting && (
+				<>
+					<div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-booth-ink/55 px-3 py-1.5 text-xs font-semibold tracking-wide text-booth-paper backdrop-blur-sm">
+						<span className="size-2 animate-pulse rounded-full bg-booth-accent" />{" "}
+						LIVE
+					</div>
+					<div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-booth-ink/55 px-3 py-1.5 text-xs font-medium text-booth-paper/80 backdrop-blur-sm">
+						<LockIcon aria-hidden="true" className="size-3" /> Nothing is
+						uploaded — it all stays on your device.
+					</div>
+				</>
 			)}
 		</div>
 	);

@@ -367,24 +367,6 @@ export function renderStrip({
 				3,
 				scale,
 			);
-
-			ctx.save();
-			ctx.textAlign = "center";
-			ctx.textBaseline = "middle";
-			const lipY = cell.y + POLAROID.BORDER + img + POLAROID.LIP / 2 + 2;
-			if (i === 0 && text) {
-				ctx.fillStyle = "#1b1b1b";
-				ctx.font = "700 17px 'Baloo 2', system-ui, sans-serif";
-				ctx.letterSpacing = "1px";
-				ctx.fillText(text, cell.x + cell.w / 2, lipY);
-			} else {
-				ctx.fillStyle = "rgba(27,27,27,0.55)";
-				ctx.font = "500 12px 'DM Mono', ui-monospace, monospace";
-				ctx.letterSpacing = "3px";
-				ctx.fillText(stamp, cell.x + cell.w / 2, lipY);
-			}
-			ctx.letterSpacing = "0px";
-			ctx.restore();
 		} else {
 			drawPhoto(
 				ctx,
